@@ -12,13 +12,13 @@ type Block struct {
 	Index        uint64
 	Nonce        int32
 	Data         []byte
-	PreviousHash []byte
-	Hash         []byte
+	PreviousHash string
+	Hash         string
 }
 
 type Chain struct {
 	Dificulty int
-	LastHash  []byte
+	LastHash  string
 	Blocks    []*Block
 }
 
@@ -46,19 +46,20 @@ func (chain *Chain) WriteBlock(block *Block) error {
 // 			// fmt.Println(block.Data + block.PreviousHash + strconv.FormatUint(uint64(block.Index), 10) + strconv.Itoa(nonce))
 // 		}
 
-// 	}
+// 
 // 	return errors.New("error"), false
 // }
 
-func (chain *Chain) CreateBlock(block *Block, data []byte) (error, Block) {
-	var b Block
-	b.PreviousHash = block.Hash
-	b.Data = data
+func (chain *Chain) CreateBlock(data []byte) (error, Block) {
+	var lastBlock = chain.Blocks[len(chain.Blocks) - 1]
+  var b Block
+  b.Data = data
+  b.PreviousHash = lastBlock.Hash
 	return errors.New("error"), b
 }
 
-func (chain *Chain) GenerateHash(block *Block, nonce uint32) (error, []byte) {
-	o := [][]byte{block.Data, block.PreviousHash}
+func (chain *Chain) GenerateHash(data []byte, previousHash string, nonce uint32) (error, []byte) {
+	o := [][]byte{data, []byte(previousHash)}
 	var n []byte
 	binary.LittleEndian.PutUint32(n, nonce)
 	j := bytes.Join(o, n)
@@ -68,8 +69,9 @@ func (chain *Chain) GenerateHash(block *Block, nonce uint32) (error, []byte) {
 
 func (chain *Chain) Genesis() error {
 	var b Block
-	b.Hash = []byte("0000000000000000000000000000000000000000000000000000000000000000")
+	b.PreviousHash = "0000000000000000000000000000000000000000000000000000000000000000"
 	b.Index = 0
+  b.Hash = chain.GenerateHash([]byte{}, b.PreviousHash, 0)
 	chain.WriteBlock(&b)
 	return errors.New("error")
 }
