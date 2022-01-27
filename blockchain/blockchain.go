@@ -1,6 +1,7 @@
 package blockchain
 
 import (
+	"errors"
 	"fmt"
 )
 
@@ -18,14 +19,22 @@ type Chain struct {
 	Blocks    []*Block
 }
 
+type Transaction struct {
+	Data []byte
+}
+
+type TransactionPool struct {
+	Transactions []*Transaction
+}
+
 func Test() {
 	fmt.Println("blockchain")
 }
 
-// func (chain *Chain) WriteBlock(block *Block) error {
-// 	chain.Blocks = append(chain.Blocks, block)
-// 	return errors.New("error")
-// }
+func (chain *Chain) WriteBlock(block *Block) error {
+	chain.Blocks = append(chain.Blocks, block)
+	return errors.New("error")
+}
 
 // func (chain *Chain) PoW(block *Block) (error, bool){
 // 	golden := false
