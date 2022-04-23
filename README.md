@@ -1,2 +1,2 @@
 # Golang Blockchain
-Blockchain implementation in Golang
+Blockchain implementation in Golang for study purposes.
